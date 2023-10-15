@@ -10,12 +10,39 @@ from num2words import num2words
 import pywikibot
 
 
+TPI2EN = {
+    "et": "eight",
+    "etpela": "eight",
+    "faipela": "five",
+    "faiv": "five",
+    "faivpela": "five",
+    "foa": "four",
+    "fopela": "four",
+    "handet": "hundred",
+    "nain": "nine",
+    "nainpela": "nine",
+    "seven": "seven",
+    "sevenpela": "seven",
+    "sikis": "six",
+    "sikispela": "six",
+    "tausen": "thousand",
+    "ten": "ten",
+    "tri": "three",
+    "tripela": "three",
+    "tu": "two",
+    "tupela": "two",
+    "wan": "one",
+    "wanpela": "one",
+}
+
+
 def create_compound(tpi):
     """ "
     Create a compound template from a phrase
     """
-    text = "{{compound|tpi|"
-    text += "|".join(tpi.split())
+    text = "{{compound|tpi"
+    for num, term in enumerate(tpi.split(), 1):
+        text += "|" + term + "|" + "t" + str(num) + "=" + TPI2EN[term]
     text += "}}"
     return text
 
