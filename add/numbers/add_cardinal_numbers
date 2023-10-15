@@ -10,19 +10,29 @@ from num2words import num2words
 import pywikibot
 
 
+def create_compound(tpi):
+    """ "
+    Create a compound template from a phrase
+    """
+    text = "{{compound|tpi|"
+    text += "|".join(tpi.split())
+    text += "}}"
+    return text
+
+
 def create_entry(number, tpi, english):
     """
     Create Tok Pisin entry for Wiktionary.
     """
     if number < 100:
-        ety = "From {{compound|tpi|" + "|".join(tpi.split()) + "}}."
+        ety = "From " + create_compound(tpi) + "."
     else:
         ety = (
             "From {{der|tpi|en|"
             + english
-            + "}}. Equivalent to {{compound|tpi|"
-            + "|".join(tpi.split())
-            + "}}."
+            + "}}. Equivalent to "
+            + create_compound(tpi)
+            + "."
         )
     entry = f"""==Tok Pisin==
 {{{{number box|tpi|{number}}}}}
