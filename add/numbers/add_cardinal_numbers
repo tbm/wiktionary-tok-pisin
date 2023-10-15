@@ -1,0 +1,94 @@
+#!/usr/bin/env python3
+
+"""
+Create cardinal numbers for Tok Pisin
+"""
+
+import csv
+
+from num2words import num2words
+import pywikibot
+
+
+def create_entry(number, tpi, english):
+    """
+    Create Tok Pisin entry for Wiktionary.
+    """
+    if number < 100:
+        ety = "From {{compound|tpi|" + "|".join(tpi.split()) + "}}."
+    else:
+        ety = (
+            "From {{der|tpi|en|"
+            + english
+            + "}}. Equivalent to {{compound|tpi|"
+            + "|".join(tpi.split())
+            + "}}."
+        )
+    entry = f"""==Tok Pisin==
+{{{{number box|tpi|{number}}}}}
+
+===Etymology===
+{ety}
+
+===Numeral===
+{{{{head|tpi|numeral}}}}
+
+# {{{{cln|tpi|cardinal numbers}}}} [[{english}]]
+"""
+
+    if number < 100:
+        entry += """
+====Coordinate terms====
+{{tpi-cardinals}}
+"""
+    return entry
+
+
+def add_entry(page, entry):
+    """
+    Create page on Wiktionary
+    """
+    if page.exists():
+        print(f"Page {page} exists")
+        return
+    page.text = entry
+    page.save(entry, minor=False)
+
+
+def get_numbers():
+    """
+    Read numbers from CSV file.
+    """
+    with open("numbers.csv", "r", encoding="utf-8") as csvfile:
+        csvreader = csv.reader(csvfile, delimiter=",")
+        for number, tpi in csvreader:
+            number = int(number)
+            yield number, tpi
+
+
+def add_cardinal_numbers():
+    """
+    Create cardinal numbers for Tok Pisin
+    """
+    site = pywikibot.Site("en", "wiktionary")
+
+    for number, tpi in get_numbers():
+        # Skip 11-19 for now since Wiktionary has the English-derived
+        # single words (twelv, tetin...)
+        if number < 20:
+            continue
+        english = num2words(number, lang="en")
+        entry = create_entry(number, tpi, english)
+        page = pywikibot.Page(site, tpi)
+        if page.exists():
+            print(f"Page {page} exists")
+            continue
+        print("Creating", page.title())
+        print(entry)
+        edit = input("Create page (Y/n): ")
+        if not edit.upper() == "N":
+            add_entry(page, entry)
+
+
+if __name__ == "__main__":
+    add_cardinal_numbers()
