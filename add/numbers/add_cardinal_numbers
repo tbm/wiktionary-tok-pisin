@@ -12,27 +12,27 @@ import pywikibot
 
 TPI2EN = {
     "et": "eight",
-    "etpela": "eight",
-    "faipela": "five",
+    "etpela ten": "eighty",
+    "faipela ten": "fifty",
     "faiv": "five",
-    "faivpela": "five",
+    "faivpela ten": "fifty",
     "foa": "four",
-    "fopela": "four",
+    "fopela ten": "forty",
     "handet": "hundred",
     "nain": "nine",
-    "nainpela": "nine",
+    "nainpela ten": "ninety",
     "seven": "seven",
-    "sevenpela": "seven",
+    "sevenpela ten": "seventy",
     "sikis": "six",
-    "sikispela": "six",
+    "sikispela ten": "sixty",
     "tausen": "thousand",
     "ten": "ten",
     "tri": "three",
-    "tripela": "three",
+    "tripela ten": "thirty",
     "tu": "two",
-    "tupela": "two",
+    "tupela ten": "twenty",
     "wan": "one",
-    "wanpela": "one",
+    "wanpela ten": "ten",  # how to handle this? "wanpela tan" is only used by 1x
 }
 
 
@@ -41,7 +41,10 @@ def create_compound(tpi):
     Create a compound template from a phrase
     """
     text = "{{compound|tpi"
+    # Horrible hack to avoid "FOOpela ten" not being split
+    tpi = tpi.replace("pela ", "pela_")
     for num, term in enumerate(tpi.split(), 1):
+        term = term.replace("_", " ")
         text += "|" + term + "|" + "t" + str(num) + "=" + TPI2EN[term]
     text += "}}"
     return text
