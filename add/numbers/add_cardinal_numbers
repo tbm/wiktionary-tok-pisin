@@ -64,9 +64,17 @@ def create_entry(number, tpi, english):
             + create_compound(tpi)
             + "."
         )
+    alt = ""
+    if "faivpela" in tpi:
+        alt = tpi.replace("faivpela", "faipela")
+        alt = f"""
+===Alternative forms===
+* {{{{alter|tpi|{alt}}}}}
+"""
+
     entry = f"""==Tok Pisin==
 {{{{number box|tpi|{number}}}}}
-
+{alt}
 ===Etymology===
 {ety}
 
